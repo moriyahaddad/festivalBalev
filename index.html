@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>פסטיבל בלב</title>
+    <link rel="stylesheet" href="styles.css">
+	<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700&family=Rubik:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- אזור עליון - לוגו ותפריט -->
+    <header>
+        <div class="logo-container">
+            <img src="images/logo.jpg" alt="פסטיבל בלב" class="logo">
+        </div>
+    </header>
+
+    <!-- אזור ראשי עם כותרת ותיאור -->
+    <section class="hero">
+        <div class="content">
+            <h1>פסטיבל בלב</h1>
+            <p>בואי לריטריט של יום פינוק וחוויה לגוף ולנפש
+במתחם "שחרית" מול הנוף המטריף של ים המלח</p>
+			<!-- כפתור הרשמה -->
+			<button id="register-btn">להרשמה</button>
+
+			<!-- מודל (חלון קופץ) להרשמה -->
+			<div id="registration-modal" class="modal">
+				<div class="modal-content">
+					<span class="close">&times;</span>
+					<h2>הרשמה לפסטיבל בלב</h2>
+					<form id="registration-form">
+						<label for="name">שם מלא</label>
+						<input type="text" id="name" required>
+
+						<label for="email">אימייל</label>
+						<input type="email" id="email" required>
+
+						<label for="phone">טלפון</label>
+						<input type="tel" id="phone" required>
+
+						<button type="submit">לתשלום</button>
+					</form>
+				</div>
+			</div>
+        </div>
+    </section>
+
+        <!-- גלריית תמונות מעוצבת -->
+    <section class="gallery">
+        <div class="gallery-grid">
+            <div class="gallery-item"><img src="images/place1.jpg" alt="תמונה 1"></div>
+            <div class="gallery-item"><img src="images/place2.jpg" alt="תמונה 2"></div>
+            <div class="gallery-item"><img src="images/place3.jpg" alt="תמונה 3"></div>
+        </div>
+    </section>
+
+
+    <!-- אזור תחתון - Footer -->
+    <footer>
+        <div class="footer-content">
+            <img src="images/logo.jpg" alt="פסטיבל בלב" class="footer-logo">
+            <nav class="footer-nav">
+                <a href="#">צור קשר</a>
+            </nav>
+            <p class="copyright"> כל הזכויות שמורות ©</p>
+        </div>
+    </footer>
+
+    <script src="scripts.js"></script>
+
