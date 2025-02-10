@@ -11,8 +11,8 @@ app.use(cors());
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: process.env.EMAIL_USER, // כתובת מייל
-        pass: process.env.EMAIL_PASS  // סיסמת אפליקציה
+        user: 'moriyahln16@gmail.com',
+        pass: 'lxmp iaif shyu slxi' // החליפי בסיסמה שלך!
     }
 });
 
