@@ -6,7 +6,14 @@ const nodemailer = require('nodemailer');
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors());
+const cors = require('cors');
+
+app.use(cors({
+    origin: "*",  // במידה וזה בעייתי, נסי לשים כתובת ה-Frontend במקום *
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type']
+}));
+
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
