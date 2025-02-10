@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             // שליחת הנתונים לשרת
-            fetch("festivalbalev-production.up.railway.app", {
+            fetch("festivalbalev-production.up.railway.app/", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name, email, phone })
