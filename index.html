@@ -6,6 +6,9 @@
     <title>פסטיבל בלב</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700&family=Rubik:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- PayPal SDK -->
+    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=ILS"></script>
 </head>
 <body>
 
@@ -21,6 +24,7 @@
         <div class="content">
             <h1>פסטיבל בלב</h1>
             <p>בואי לריטריט של יום פינוק וחוויה לגוף ולנפש במתחם "שחרית" מול הנוף המטריף של ים המלח</p>
+
             <!-- כפתור הרשמה -->
             <button id="register-btn">להרשמה</button>
 
@@ -41,26 +45,14 @@
 
                         <button type="button" id="pay-now">לתשלום</button>
 
-                        <!-- כאן יוצג כפתור ה-PayPal אחרי לחיצה על "לתשלום" -->
-                        <div id="payment-section" style="display: none;">
-                            <div id="paypal-button-container"></div>
-                        </div>
+                        <!-- אזור כפתור PayPal -->
+                        <div id="paypal-button-container" style="display: none;"></div>
                     </form>
                 </div>
             </div>
         </div>
     </section>
 
-        <!-- גלריית תמונות מעוצבת -->
-    <section class="gallery">
-        <div class="gallery-grid">
-            <div class="gallery-item"><img src="images/rachel.png" alt="תמונה 1"></div>
-            <div class="gallery-item"><img src="images/sunset.png" alt="תמונה 2"></div>
-            <div class="gallery-item"><img src="images/cake.png" alt="תמונה 3"></div>
-        </div>
-    </section>
-    
-    <!-- אזור תחתון - Footer -->
     <footer>
         <div class="footer-content">
             <img src="images/logo.jpg" alt="פסטיבל בלב" class="footer-logo">
@@ -71,11 +63,6 @@
         </div>
     </footer>
 
-    <!-- טעינת סקריפט PayPal -->
-    <script src="https://www.paypal.com/sdk/js?client-id=Abge_wGok_sDPkUA7pzP4d7y_lB33eu0xGdjFFFxl5EPgk5qK47b32tekU1eTqIGGe0kqjCleLelzNiD&currency=ILS"></script>
-
-    <!-- טעינת סקריפט ה-JavaScript -->
     <script src="scripts.js"></script>
-
 </body>
 </html>
