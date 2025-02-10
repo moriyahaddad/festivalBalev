@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>פסטיבל בלב</title>
     <link rel="stylesheet" href="styles.css">
-	<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700&family=Rubik:wght@400;700&display=swap" rel="stylesheet">
-	
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700&family=Rubik:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -21,47 +20,36 @@
     <section class="hero">
         <div class="content">
             <h1>פסטיבל בלב</h1>
-            <p>בואי לריטריט של יום פינוק וחוויה לגוף ולנפש
-במתחם "שחרית" מול הנוף המטריף של ים המלח</p>
-			<!-- כפתור הרשמה -->
-			<button id="register-btn">להרשמה</button>
+            <p>בואי לריטריט של יום פינוק וחוויה לגוף ולנפש במתחם "שחרית" מול הנוף המטריף של ים המלח</p>
+            <!-- כפתור הרשמה -->
+            <button id="register-btn">להרשמה</button>
 
-			<!-- מודל (חלון קופץ) להרשמה -->
-			<div id="registration-modal" class="modal">
-				<div class="modal-content">
-					<span class="close">&times;</span>
-					<h2>הרשמה לפסטיבל בלב</h2>
-					<form id="registration-form">
-						<label for="name">שם מלא</label>
-						<input type="text" id="name" required>
+            <!-- מודל (חלון קופץ) להרשמה -->
+            <div id="registration-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2>הרשמה לפסטיבל בלב</h2>
+                    <form id="registration-form">
+                        <label for="name">שם מלא</label>
+                        <input type="text" id="name" required>
 
-						<label for="email">אימייל</label>
-						<input type="email" id="email" required>
+                        <label for="email">אימייל</label>
+                        <input type="email" id="email" required>
 
-						<label for="phone">טלפון</label>
-						<input type="tel" id="phone" required>
-						<script src="https://www.paypal.com/sdk/js?client-id=BAAORt9DRKzVvPozxRrK0Ckta-H4VW5Ot0yM8PaXGzi4DPT6Dt0lxPC1-K20BoaU87s9AWE_93h3NTMgOQ&components=hosted-buttons&disable-funding=venmo&currency=ILS"></script>
-<div id="paypal-container-AU6Q8DMNMMDQL"></div>
-<script>
-  paypal.HostedButtons({
-    hostedButtonId: "AU6Q8DMNMMDQL",
-  }).render("#paypal-container-AU6Q8DMNMMDQL")
-</script>
-					</form>
-				</div>
-			</div>
+                        <label for="phone">טלפון</label>
+                        <input type="tel" id="phone" required>
+
+                        <button type="button" id="pay-now">לתשלום</button>
+
+                        <!-- כאן יוצג כפתור ה-PayPal אחרי לחיצה על "לתשלום" -->
+                        <div id="payment-section" style="display: none;">
+                            <div id="paypal-button-container"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </section>
-
-        <!-- גלריית תמונות מעוצבת -->
-    <section class="gallery">
-        <div class="gallery-grid">
-            <div class="gallery-item"><img src="images/rachel.png" alt="תמונה 1"></div>
-            <div class="gallery-item"><img src="images/sunset.png" alt="תמונה 2"></div>
-            <div class="gallery-item"><img src="images/cake.png" alt="תמונה 3"></div>
-        </div>
-    </section>
-
 
     <!-- אזור תחתון - Footer -->
     <footer>
@@ -74,7 +62,11 @@
         </div>
     </footer>
 
+    <!-- טעינת סקריפט PayPal -->
+    <script src="https://www.paypal.com/sdk/js?client-id=Abge_wGok_sDPkUA7pzP4d7y_lB33eu0xGdjFFFxl5EPgk5qK47b32tekU1eTqIGGe0kqjCleLelzNiD&currency=ILS"></script>
+
+    <!-- טעינת סקריפט ה-JavaScript -->
     <script src="scripts.js"></script>
-	
 
-
+</body>
+</html>
