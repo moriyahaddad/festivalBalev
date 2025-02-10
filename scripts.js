@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             // שליחת הנתונים לשרת
-            fetch("http://localhost:3000/register", {
+            fetch("https://festivalbalev.onrender.com", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name, email, phone })
