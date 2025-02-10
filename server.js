@@ -75,4 +75,9 @@ app.listen(PORT, () => {
 app.get("/", (req, res) => {
     res.send("🎉 השרת עובד בהצלחה!");
 });
+const cors = require('cors');
+app.use(cors({
+    origin: '*',  // אם צריך, אפשר להחליף לכתובת האתר שלך בלבד
+    methods: ['GET', 'POST']
+}));
 
