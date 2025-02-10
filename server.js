@@ -72,4 +72,7 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`✅ השרת פועל על http://localhost:${PORT}`);
 });
+app.get("/", (req, res) => {
+    res.send("🎉 השרת עובד בהצלחה!");
+});
 
