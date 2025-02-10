@@ -1,48 +1,59 @@
-document.addEventListener("DOMContentLoaded", function() {
-    let registerBtn = document.getElementById("register-btn");
-    let modal = document.getElementById("registration-modal");
-    let closeBtn = document.querySelector(".close");
-
-    if (!registerBtn || !modal || !closeBtn) {
-        console.error("🔴 שגיאה: אחד האלמנטים לא נמצא! בדקי שה-ID נכון.");
-        return;
-    }
+document.addEventListener("DOMContentLoaded", function () {
+    const registerForm = document.getElementById("registration-form");
+    const modal = document.getElementById("registration-modal");
+    const registerBtn = document.getElementById("register-btn");
+    const closeBtn = document.querySelector(".close");
 
     // פתיחת המודל בלחיצה על "להרשמה"
-    registerBtn.addEventListener("click", function() {
-        modal.style.display = "flex";
-    });
+    if (registerBtn) {
+        registerBtn.addEventListener("click", function () {
+            modal.style.display = "flex";
+        });
+    }
 
-    // סגירת המודל בלחיצה על "X"
-    closeBtn.addEventListener("click", function() {
-        modal.style.display = "none";
-    });
+    // סגירה בלחיצה על ה-X
+    if (closeBtn) {
+        closeBtn.addEventListener("click", function () {
+            modal.style.display = "none";
+        });
+    }
 
-    // סגירת המודל בלחיצה מחוץ לתיבה
-    window.addEventListener("click", function(event) {
+    // סגירה בלחיצה מחוץ לחלון
+    window.addEventListener("click", function (event) {
         if (event.target === modal) {
             modal.style.display = "none";
         }
     });
-});
-document.getElementById("registration-form").addEventListener("submit", async function(event) {
-    event.preventDefault();
 
-    const firstName = document.getElementById("first-name").value;
-    const lastName = document.getElementById("last-name").value;
-    const age = document.getElementById("age").value;
-    const email = document.getElementById("email").value;
+    // שליחת הטופס
+    if (registerForm) {
+        registerForm.addEventListener("submit", function (event) {
+            event.preventDefault();
 
-    const response = await fetch("http://localhost:3000/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ firstName, lastName, age, email })
-    });
+            const name = document.getElementById("name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const phone = document.getElementById("phone").value.trim();
 
-    if (response.ok) {
-        alert("ההרשמה נשמרה בהצלחה!");
-        document.getElementById("registration-form").reset();
-    } else {
-        alert("שגיאה בהרשמה. נסי שוב!");
+            if (!name || !email || !phone) {
+                alert("נא למלא את כל השדות!");
+                return;
+            }
+
+            // שליחת הנתונים לשרת
+            fetch("http://localhost:3000/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, email, phone })
+            })
+            .then(response => response.text())
+            .then(message => {
+                alert(message); // הודעה על הצלחה
+                modal.style.display = "none";
+            })
+            .catch(error => {
+                console.error("שגיאה בשליחת הנתונים:", error);
+                alert("שגיאה בשליחת הנתונים, נסי שוב.");
+            });
+        });
     }
 });
