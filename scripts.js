@@ -3,11 +3,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const modal = document.getElementById("registration-modal");
     const registerBtn = document.getElementById("register-btn");
     const closeBtn = document.querySelector(".close");
-    const payNowButton = document.getElementById("pay-now");
-    const paymentSection = document.getElementById("payment-section");
-    const paypalContainer = document.getElementById("paypal-button-container");
+    const payNowBtn = document.getElementById("pay-now");
 
-    // פתיחת המודל בלחיצה על "להרשמה"
+    // פתיחת המודל
     if (registerBtn) {
         registerBtn.addEventListener("click", function () {
             modal.style.display = "flex";
@@ -28,11 +26,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // שליחת הטופס
-    if (registerForm) {
-        registerForm.addEventListener("submit", function (event) {
-            event.preventDefault();
-
+    // שליחת הטופס ויצירת כפתור PayPal
+    if (payNowBtn) {
+        payNowBtn.addEventListener("click", function () {
             const name = document.getElementById("name").value.trim();
             const email = document.getElementById("email").value.trim();
             const phone = document.getElementById("phone").value.trim();
@@ -42,49 +38,39 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // שליחת הנתונים לשרת
-            fetch("https://festivalbalev-production.up.railway.app/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, email, phone })
-            })
-            .then(response => response.text())
-            .then(message => {
-                alert(message); // הודעה על הצלחה
-                paymentSection.style.display = "block"; // הצגת PayPal
-            })
-            .catch(error => {
-                console.error("שגיאה בשליחת הנתונים:", error);
-                alert("שגיאה בשליחת הנתונים, נסי שוב.");
-            });
-        });
-    }
-
-    // הצגת PayPal בלחיצה על "לתשלום"
-    if (payNowButton) {
-        payNowButton.addEventListener("click", function () {
-            paymentSection.style.display = "block"; // הצגת כפתור PayPal
-
+            // יצירת כפתור תשלום של PayPal
             paypal.Buttons({
                 createOrder: function (data, actions) {
                     return actions.order.create({
                         purchase_units: [{
                             amount: {
-                                value: '100.00' // מחיר הכרטיס
+                                value: "100.00" // שנה את הסכום לתשלום
                             }
                         }]
                     });
                 },
                 onApprove: function (data, actions) {
                     return actions.order.capture().then(function (details) {
-                        alert('התשלום בוצע בהצלחה על ידי ' + details.payer.name.given_name);
+                        alert("התשלום בוצע בהצלחה על ידי " + details.payer.name.given_name);
+                        
+                        // שליחת מידע לשרת לאחר התשלום
+                        fetch("https://festivalbalev-production.up.railway.app/register", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ name, email, phone })
+                        })
+                        .then(response => response.text())
+                        .then(message => {
+                            alert("ההרשמה נשמרה ונשלחה למייל בהצלחה!");
+                            modal.style.display = "none";
+                        })
+                        .catch(error => {
+                            console.error("שגיאה בשליחת הנתונים:", error);
+                            alert("שגיאה בשליחת הנתונים, נסי שוב.");
+                        });
                     });
-                },
-                onError: function (err) {
-                    console.error('שגיאה בתשלום:', err);
-                    alert('אירעה שגיאה בתשלום, נסי שוב.');
                 }
-            }).render('#paypal-button-container');
+            }).render("#paypal-button-container");
         });
     }
 });
