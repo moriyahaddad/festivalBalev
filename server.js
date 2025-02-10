@@ -12,7 +12,7 @@ app.use(cors());
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'moriyahln16@gmail.com',
+        user: 'moriyahln16@gmail.com, sarabatel1@gmail.com, sapirhadad1234@gmail.com',
         pass: 'lxmp iaif shyu slxi' // החליפי בסיסמה שלך!
     }
 });
