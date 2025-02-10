@@ -69,9 +69,9 @@ app.post('/register', (req, res) => {
 });
 
 // הפעלת השרת
-const PORT = process.env.PORT||300;
-app.listen(PORT, () => {
-    console.log(`✅ השרת פועל על http://localhost:${PORT}`);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`✅ השרת פועל על פורט ${PORT}`);
 });
 app.get("/", (req, res) => {
     res.send("🎉 השרת עובד בהצלחה!");
