@@ -1,79 +1,56 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const fs = require('fs');
-const nodemailer = require('nodemailer');
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const fs = require("fs");
+const nodemailer = require("nodemailer");
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    service: "gmail",
     auth: {
-        user: 'moriyahln16@gmail.com',
-        pass: 'lxmp iaif shyu slxi' // החליפי בסיסמה שלך!
+        user: "moriyahln16@gmail.com",
+        pass: "lxmp iaif shyu slxi" // החליפי בסיסמה שלך!
     }
 });
 
-// פונקציה לשליחת מייל
+// שליחת מייל
 function sendEmail(name, email, phone) {
     const mailOptions = {
-        from: 'moriyahln16@gmail.com',
-        to: 'moriyahln16@gmail.com, sarabatel1@gmail.com, sapirhadad1234@gmail.com',
-        subject: 'הרשמה חדשה לפסטיבל בלב 🎉',
-        text: `!הרשמה חדשה התקבלה\n\nשם: ${name}\nאימייל: ${email}\nטלפון: ${phone}\n\n✨ בהצלחה`
+        from: "moriyahln16@gmail.com",
+        to: email,
+        subject: "אישור תשלום לפסטיבל בלב 🎉",
+        text: `שלום ${name},\n\nההרשמה שלך לפסטיבל בלב התקבלה בהצלחה!\n\nפרטי ההרשמה שלך:\nשם: ${name}\nאימייל: ${email}\nטלפון: ${phone}\n\nנשמח לראותך!`
+    };
+
+    const adminMailOptions = {
+        from: "moriyahln16@gmail.com",
+        to: "moriyahln16@gmail.com",
+        subject: "הרשמה חדשה לפסטיבל בלב 🎉",
+        text: `הרשמה חדשה התקבלה!\n\nשם: ${name}\nאימייל: ${email}\nטלפון: ${phone}`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.error('❌ שגיאה בשליחת המייל:', error);
-        } else {
-            console.log('✅ מייל נשלח:', info.response);
-        }
+        if (error) console.error("❌ שגיאה בשליחת המייל למשתמש:", error);
+        else console.log("✅ מייל נשלח למשתמש:", info.response);
+    });
+
+    transporter.sendMail(adminMailOptions, (error, info) => {
+        if (error) console.error("❌ שגיאה בשליחת המייל לאדמין:", error);
+        else console.log("✅ מייל נשלח לאדמין:", info.response);
     });
 }
 
-// שמירת נתונים לקובץ JSON
-function saveRegistration(name, email, phone) {
-    const filePath = 'registrations.json';
-    const newEntry = { name, email, phone };
-
-    fs.readFile(filePath, (err, data) => {
-        let registrations = [];
-        if (!err) {
-            registrations = JSON.parse(data);
-        }
-        registrations.push(newEntry);
-
-        fs.writeFile(filePath, JSON.stringify(registrations, null, 2), err => {
-            if (err) console.error("❌ שגיאה בשמירת הנתונים:", err);
-            else console.log("✅ הנתונים נשמרו בהצלחה!");
-        });
-    });
-}
-
-// טיפול בהרשמות
-app.post('/register', (req, res) => {
+// טיפול בהרשמות לאחר תשלום
+app.post("/register", (req, res) => {
     const { name, email, phone } = req.body;
-
-    if (!name || !email || !phone) {
-        return res.status(400).send("!נא למלא את כל השדות");
-    }
-
     sendEmail(name, email, phone);
-    saveRegistration(name, email, phone);
-
-    res.send("ההרשמה נשמרה ונשלחה למייל בהצלחה!");
+    res.send("ההרשמה והתשלום אושרו! מייל אישור נשלח.");
 });
 
-// הפעלת השרת
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, "0.0.0.0", () => {
-    console.log(`✅ השרת פועל על פורט ${PORT}`);
+app.listen(PORT, () => {
+    console.log(`✅ השרת פועל על http://localhost:${PORT}`);
 });
-app.get("/", (req, res) => {
-    res.send("🎉 השרת עובד בהצלחה!");
-});
-
