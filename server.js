@@ -1,28 +1,59 @@
 const express = require('express');
-const fs = require('fs');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const fs = require('fs');
+const nodemailer = require('nodemailer');
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-// קובץ שבו נשמור את הנתונים
-const DATA_FILE = 'registrations.json';
-
-// קריאת הנתונים הקיימים
-function loadRegistrations() {
-    if (fs.existsSync(DATA_FILE)) {
-        return JSON.parse(fs.readFileSync(DATA_FILE));
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'moriyahln16@gmail.com',
+        pass: 'lxmp iaif shyu slxi' // החליפי בסיסמה שלך!
     }
-    return [];
+});
+
+// פונקציה לשליחת מייל
+function sendEmail(name, email, phone) {
+    const mailOptions = {
+        from: 'moriyahln16@gmail.com',
+        to: 'moriyahln16@gmail.com',
+        subject: 'הרשמה חדשה לפסטיבל בלב 🎉',
+        text: `הרשמה חדשה התקבלה!\n\nשם: ${name}\nאימייל: ${email}\nטלפון: ${phone}\n\n✨ בהצלחה!`
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.error('❌ שגיאה בשליחת המייל:', error);
+        } else {
+            console.log('✅ מייל נשלח:', info.response);
+        }
+    });
 }
 
-// שמירת הנתונים בקובץ
-function saveRegistrations(data) {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+// שמירת נתונים לקובץ JSON
+function saveRegistration(name, email, phone) {
+    const filePath = 'registrations.json';
+    const newEntry = { name, email, phone };
+
+    fs.readFile(filePath, (err, data) => {
+        let registrations = [];
+        if (!err) {
+            registrations = JSON.parse(data);
+        }
+        registrations.push(newEntry);
+
+        fs.writeFile(filePath, JSON.stringify(registrations, null, 2), err => {
+            if (err) console.error("❌ שגיאה בשמירת הנתונים:", err);
+            else console.log("✅ הנתונים נשמרו בהצלחה!");
+        });
+    });
 }
 
+// טיפול בהרשמות
 app.post('/register', (req, res) => {
     const { name, email, phone } = req.body;
 
@@ -30,21 +61,14 @@ app.post('/register', (req, res) => {
         return res.status(400).send("נא למלא את כל השדות!");
     }
 
-    let registrations = loadRegistrations();
-    registrations.push({ name, email, phone, date: new Date().toISOString() });
+    sendEmail(name, email, phone);
+    saveRegistration(name, email, phone);
 
-    saveRegistrations(registrations);
-    res.send("ההרשמה נשמרה בהצלחה!");
-});
-
-
-// הצגת כל ההרשמות
-app.get('/registrations', (req, res) => {
-    res.json(loadRegistrations());
+    res.send("ההרשמה נשמרה ונשלחה למייל בהצלחה!");
 });
 
 // הפעלת השרת
 const PORT = 3000;
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`✅ השרת פועל על http://localhost:${PORT}`);
 });
