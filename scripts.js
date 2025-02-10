@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const registerBtn = document.getElementById("register-btn");
     const closeBtn = document.querySelector(".close");
     const payNowBtn = document.getElementById("pay-now");
+    const paypalContainer = document.getElementById("paypal-button-container");
 
     // פתיחת המודל
     if (registerBtn) {
@@ -26,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // שליחת הטופס ויצירת כפתור PayPal
+    // טיפול בלחיצה על "לתשלום"
     if (payNowBtn) {
         payNowBtn.addEventListener("click", function () {
             const name = document.getElementById("name").value.trim();
@@ -38,13 +39,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // יצירת כפתור תשלום של PayPal
+            // הצגת כפתור PayPal
+            paypalContainer.style.display = "block";
+
+            // טעינת PayPal
             paypal.Buttons({
                 createOrder: function (data, actions) {
                     return actions.order.create({
                         purchase_units: [{
                             amount: {
-                                value: "100.00" // שנה את הסכום לתשלום
+                                value: "100.00" // סכום לתשלום
                             }
                         }]
                     });
@@ -52,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 onApprove: function (data, actions) {
                     return actions.order.capture().then(function (details) {
                         alert("התשלום בוצע בהצלחה על ידי " + details.payer.name.given_name);
-                        
+
                         // שליחת מידע לשרת לאחר התשלום
                         fetch("https://festivalbalev-production.up.railway.app/register", {
                             method: "POST",
@@ -61,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         })
                         .then(response => response.text())
                         .then(message => {
-                            alert("ההרשמה נשמרה ונשלחה למייל בהצלחה!");
+                            alert("ההרשמה והתשלום נשמרו ונשלחו למייל בהצלחה!");
                             modal.style.display = "none";
                         })
                         .catch(error => {
