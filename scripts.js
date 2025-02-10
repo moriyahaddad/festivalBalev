@@ -23,26 +23,6 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.text())
             .then(message => {
                 console.log("✅ הרשמה נשמרה:", message);
-
-                // הפעלת PayPal
-                paypal.Buttons({
-                    createOrder: function (data, actions) {
-                        return actions.order.create({
-                            purchase_units: [{
-                                amount: {
-                                    value: '100.00', // סכום לדוגמה
-                                    currency_code: 'ILS'
-                                }
-                            }]
-                        });
-                    },
-                    onApprove: function (data, actions) {
-                        return actions.order.capture().then(function (details) {
-                            alert("התשלום הצליח! תודה, " + details.payer.name.given_name);
-                            modal.style.display = "none"; // סגירת המודאל
-                        });
-                    }
-                }).render('body'); // PayPal יוצג מיד
             })
             .catch(error => {
                 console.error("❌ שגיאה בשליחת הנתונים:", error);
