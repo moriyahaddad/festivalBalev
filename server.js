@@ -12,7 +12,7 @@ app.use(cors());
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'moriyahln16@gmail.com, sarabatel1@gmail.com, sapirhadad1234@gmail.com',
+        user: 'moriyahln16@gmail.com',
         pass: 'lxmp iaif shyu slxi' // החליפי בסיסמה שלך!
     }
 });
@@ -21,7 +21,7 @@ const transporter = nodemailer.createTransport({
 function sendEmail(name, email, phone) {
     const mailOptions = {
         from: 'moriyahln16@gmail.com',
-        to: 'moriyahln16@gmail.com',
+        to: 'moriyahln16@gmail.com, sarabatel1@gmail.com, sapirhadad1234@gmail.com',
         subject: 'הרשמה חדשה לפסטיבל בלב 🎉',
         text: `!הרשמה חדשה התקבלה\n\nשם: ${name}\nאימייל: ${email}\nטלפון: ${phone}\n\n✨ בהצלחה`
     };
