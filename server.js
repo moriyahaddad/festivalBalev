@@ -23,7 +23,7 @@ function sendEmail(name, email, phone) {
         from: 'moriyahln16@gmail.com',
         to: 'moriyahln16@gmail.com',
         subject: 'הרשמה חדשה לפסטיבל בלב 🎉',
-        text: `הרשמה חדשה התקבלה!\n\nשם: ${name}\nאימייל: ${email}\nטלפון: ${phone}\n\n✨ בהצלחה!`
+        text: `!הרשמה חדשה התקבלה\n\nשם: ${name}\nאימייל: ${email}\nטלפון: ${phone}\n\n✨ בהצלחה`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -59,7 +59,7 @@ app.post('/register', (req, res) => {
     const { name, email, phone } = req.body;
 
     if (!name || !email || !phone) {
-        return res.status(400).send("נא למלא את כל השדות!");
+        return res.status(400).send("!נא למלא את כל השדות");
     }
 
     sendEmail(name, email, phone);
