@@ -6,13 +6,7 @@ const nodemailer = require('nodemailer');
 
 const app = express();
 app.use(bodyParser.json());
-const cors = require('cors');
-
-app.use(cors({
-    origin: "*",  // במידה וזה בעייתי, נסי לשים כתובת ה-Frontend במקום *
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type']
-}));
+app.use(cors());
 
 
 const transporter = nodemailer.createTransport({
