@@ -305,3 +305,10 @@ button {
 #registration-form button:hover {
     background-color: #5a9d3d;
 }
+
+#paypal-button-container {
+    max-height: 400px; /* מגביל את הגובה של PayPal כדי שלא יפריע לגלילה */
+    overflow-y: auto; /* מאפשר גלילה במקרה הצורך */
+    padding: 10px;
+}
+
