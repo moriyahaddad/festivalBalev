@@ -7,21 +7,20 @@ const PDFDocument = require("pdfkit");
 
 const app = express();
 app.use(bodyParser.json());
-
-// 📌 CORS - מתיר רק גישה מהאתר שלך
 app.use(cors({
-    origin: "https://moriyahaddad.github.io/festivalBalev/", // ✨ הכניסי את ה-URL של האתר שלך!
+    origin: "https://moriyahaddad.github.io/festivalBalev", // כאן עדכני לכתובת האתר שלך
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"]
 }));
 
-// 📌 Middleware לטיפול ב-CORS
+// Middleware נוסף להוספת כותרות CORS נכונות
 app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "https://moriyahaddad.github.io/festivalBalev/"); // ✨ הכניסי את ה-URL של האתר שלך!
+    res.header("Access-Control-Allow-Origin", "https://moriyahaddad.github.io/festivalBalev");
     res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
     res.header("Access-Control-Allow-Headers", "Content-Type");
     next();
 });
+
 
 // 📌 הגדרת שליחת מיילים
 const transporter = nodemailer.createTransport({
