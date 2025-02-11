@@ -2,10 +2,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const registerForm = document.getElementById("registration-form");
     const payNowBtn = document.getElementById("pay-now");
     const paypalContainer = document.getElementById("paypal-button-container");
-    const modal = document.getElementById("registration-modal");
-    const closeModal = document.querySelector(".close");
-    const thankYou = document.getElementById("thank-you");
-
     let userData = {};
 
     payNowBtn.addEventListener("click", function () {
@@ -50,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
             onApprove: function (data, actions) {
                 return actions.order.capture().then(function (details) {
                     alert("התשלום התקבל בהצלחה!");
-                    
+
                     fetch("https://festivalbalev-production.up.railway.app/payment-confirmation", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -59,8 +55,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     .then(response => response.text())
                     .then(message => {
                         alert(message);
-                        modal.style.display = "none"; // סגירת חלון ההרשמה
-                        thankYou.style.display = "block"; // הצגת תמונת תודה
                     })
                     .catch(error => {
                         console.error("שגיאה בשליחת אישור התשלום:", error);
@@ -70,8 +64,4 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }).render("#paypal-button-container");
     }
-
-    closeModal.addEventListener("click", function () {
-        modal.style.display = "none";
-    });
 });
