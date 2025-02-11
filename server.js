@@ -6,21 +6,23 @@ const fs = require("fs");
 const PDFDocument = require("pdfkit");
 
 const app = express();
-app.use(bodyParser.json());
+app.use(bodyParser.json())
 app.use(cors({
-    origin: "https://moriyahaddad.github.io/festivalBalev", // כאן עדכני לכתובת האתר שלך
+    origin: ["https://moriyahaddad.github.io", "https://moriyahaddad.github.io/festivalBalev"], // שתי הכתובות כדי להתאים לכל מצב
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"]
 }));
 
-// Middleware נוסף להוספת כותרות CORS נכונות
+// Middleware נוסף לווידוא שהכותרות עוברות כראוי
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "https://moriyahaddad.github.io/festivalBalev");
     res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
     res.header("Access-Control-Allow-Headers", "Content-Type");
+    if (req.method === "OPTIONS") {
+        return res.status(200).end();
+    }
     next();
 });
-
 
 // 📌 הגדרת שליחת מיילים
 const transporter = nodemailer.createTransport({
