@@ -10,14 +10,14 @@ app.use(bodyParser.json());
 
 // 📌 CORS - מתיר רק גישה מהאתר שלך
 app.use(cors({
-    origin: "https://moriyahhaddad.github.io", // ✨ הכניסי את ה-URL של האתר שלך!
+    origin: "https://moriyahaddad.github.io/festivalBalev/", // ✨ הכניסי את ה-URL של האתר שלך!
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"]
 }));
 
 // 📌 Middleware לטיפול ב-CORS
 app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "https://moriyahhaddad.github.io"); // ✨ הכניסי את ה-URL של האתר שלך!
+    res.header("Access-Control-Allow-Origin", "https://moriyahaddad.github.io/festivalBalev/"); // ✨ הכניסי את ה-URL של האתר שלך!
     res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
     res.header("Access-Control-Allow-Headers", "Content-Type");
     next();
