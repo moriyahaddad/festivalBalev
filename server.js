@@ -38,13 +38,22 @@ app.post("/register", (req, res) => {
 
     sendEmail(email, "אישור הרשמה לפסטיבל בלב", `שלום ${name},
     תודה שנרשמת לפסטיבל בלב!`);
+    sendEmail("moriyahln16@gmail.com", "הרשמה חדשה לפסטיבל בלב", `נרשם משתמש חדש:
+    שם: ${name}
+    אימייל: ${email}
+    טלפון: ${phone}`);
     res.send("✅ ההרשמה נשמרה בהצלחה! כעת ניתן לשלם.");
 });
 
 app.post("/payment-confirmation", (req, res) => {
     const { name, email, phone } = req.body;
+
     sendEmail(email, "אישור תשלום לפסטיבל בלב", `שלום ${name},
     התשלום שלך נקלט בהצלחה!`);
+    sendEmail("moriyahln16@gmail.com", "תשלום חדש לפסטיבל בלב", `משתמש ביצע תשלום:
+    שם: ${name}
+    אימייל: ${email}
+    טלפון: ${phone}`);
     res.send("✅ התשלום התקבל והמייל נשלח בהצלחה!");
 });
 
