@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const registerForm = document.getElementById("registration-form");
     const payNowBtn = document.getElementById("pay-now");
     const paypalContainer = document.getElementById("paypal-button-container");
+    const paymentSuccessImage = document.getElementById("payment-success-image");
     let userData = {};
 
     payNowBtn.addEventListener("click", function () {
@@ -44,17 +45,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
             },
             onApprove: function (data, actions) {
-                return actions.order.capture().then(function (details) {
+                return actions.order.capture().then(function () {
                     alert("התשלום התקבל בהצלחה!");
+                    paymentSuccessImage.style.display = "block"; 
 
                     fetch("https://festivalbalev-production.up.railway.app/payment-confirmation", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(userData)
                     })
-                    .then(response => response.text())
-                    .then(message => {
-                        alert(message);
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
                     })
                     .catch(error => {
                         console.error("שגיאה בשליחת אישור התשלום:", error);
@@ -64,16 +66,4 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }).render("#paypal-button-container");
     }
-
-    // מניעת גלילה בעת תשלום בכרטיס אשראי
-    const observer = new MutationObserver(() => {
-        const paypalIframe = document.querySelector("iframe[src*='paypal']");
-        if (paypalIframe) {
-            document.body.style.overflow = "hidden";
-        } else {
-            document.body.style.overflow = "auto";
-        }
-    });
-
-    observer.observe(document.body, { childList: true, subtree: true });
 });
