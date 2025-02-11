@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
         user: "moriyahln16@gmail.com",
-        pass: "lxmp iaif shyu slxi"
+        pass: "lxmp iaif shyu slxi" // עדכני בסיסמה הנכונה
     }
 });
 
@@ -59,8 +59,12 @@ app.post("/register", (req, res) => {
         return res.status(400).send("נא למלא את כל השדות!");
     }
 
-    sendEmail(email, "אישור הרשמה לפסטיבל בלב", `שלום ${name}, תודה שנרשמת!`);
-    sendEmail("moriyahln16@gmail.com", "הרשמה חדשה לפסטיבל בלב", `נרשם משתמש חדש:\nשם: ${name}\nאימייל: ${email}\nטלפון: ${phone}`);
+    sendEmail(
+        "moriyahln16@gmail.com",
+        "הרשמה חדשה לפסטיבל בלב",
+        `נרשם משתמש חדש:\nשם: ${name}\nאימייל: ${email}\nטלפון: ${phone}`
+    );
+
     res.send("✅ ההרשמה נשמרה בהצלחה! כעת ניתן לשלם.");
 });
 
@@ -69,8 +73,20 @@ app.post("/payment-confirmation", async (req, res) => {
 
     try {
         const receiptPath = await generateReceipt(name, email, phone);
-        sendEmail(email, "אישור תשלום לפסטיבל בלב", `שלום ${name}, התשלום שלך התקבל!`, receiptPath);
-        sendEmail("moriyahln16@gmail.com", "תשלום חדש לפסטיבל בלב", `משתמש ביצע תשלום:\nשם: ${name}\nאימייל: ${email}\nטלפון: ${phone}`);
+        
+        sendEmail(
+            email,
+            "אישור תשלום לפסטיבל בלב",
+            `שלום ${name}, התשלום שלך התקבל! מצורפת הקבלה.`,
+            receiptPath
+        );
+
+        sendEmail(
+            "moriyahln16@gmail.com",
+            "תשלום חדש לפסטיבל בלב",
+            `משתמש ביצע תשלום:\nשם: ${name}\nאימייל: ${email}\nטלפון: ${phone}`
+        );
+
         res.send("✅ התשלום התקבל והמייל עם הקבלה נשלח בהצלחה!");
     } catch (error) {
         console.error("❌ שגיאה בשליחת הקבלה:", error);
