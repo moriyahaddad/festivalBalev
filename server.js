@@ -7,16 +7,32 @@ const PDFDocument = require("pdfkit");
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors());
 
+// 📌 CORS - מתיר רק גישה מהאתר שלך
+app.use(cors({
+    origin: "https://moriyahhaddad.github.io", // ✨ הכניסי את ה-URL של האתר שלך!
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"]
+}));
+
+// 📌 Middleware לטיפול ב-CORS
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "https://moriyahhaddad.github.io"); // ✨ הכניסי את ה-URL של האתר שלך!
+    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type");
+    next();
+});
+
+// 📌 הגדרת שליחת מיילים
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
         user: "moriyahln16@gmail.com",
-        pass: "lxmp iaif shyu slxi" // עדכני בסיסמה הנכונה
+        pass: "lxmp iaif shyu slxi" // ✨ שימי כאן את הסיסמה של אפליקציית Gmail שלך
     }
 });
 
+// 📌 פונקציה לשליחת מייל (תומכת בקובץ PDF)
 function sendEmail(to, subject, text, attachment = null) {
     const mailOptions = {
         from: "moriyahln16@gmail.com",
@@ -32,6 +48,7 @@ function sendEmail(to, subject, text, attachment = null) {
     });
 }
 
+// 📌 יצירת קבלה PDF
 function generateReceipt(name, email, phone) {
     return new Promise((resolve, reject) => {
         const doc = new PDFDocument();
@@ -52,6 +69,7 @@ function generateReceipt(name, email, phone) {
     });
 }
 
+// 📌 טיפול בהרשמה
 app.post("/register", (req, res) => {
     const { name, email, phone } = req.body;
 
@@ -59,33 +77,20 @@ app.post("/register", (req, res) => {
         return res.status(400).send("נא למלא את כל השדות!");
     }
 
-    sendEmail(
-        "moriyahln16@gmail.com",
-        "הרשמה חדשה לפסטיבל בלב",
-        `נרשם משתמש חדש:\nשם: ${name}\nאימייל: ${email}\nטלפון: ${phone}`
-    );
-
+    sendEmail("moriyahln16@gmail.com", "הרשמה חדשה לפסטיבל בלב", `נרשם משתמש חדש:\nשם: ${name}\nאימייל: ${email}\nטלפון: ${phone}`);
+    
     res.send("✅ ההרשמה נשמרה בהצלחה! כעת ניתן לשלם.");
 });
 
+// 📌 טיפול באישור תשלום ושליחת קבלה
 app.post("/payment-confirmation", async (req, res) => {
     const { name, email, phone } = req.body;
 
     try {
         const receiptPath = await generateReceipt(name, email, phone);
-        
-        sendEmail(
-            email,
-            "אישור תשלום לפסטיבל בלב",
-            `שלום ${name}, התשלום שלך התקבל! מצורפת הקבלה.`,
-            receiptPath
-        );
 
-        sendEmail(
-            "moriyahln16@gmail.com",
-            "תשלום חדש לפסטיבל בלב",
-            `משתמש ביצע תשלום:\nשם: ${name}\nאימייל: ${email}\nטלפון: ${phone}`
-        );
+        sendEmail(email, "אישור תשלום וקבלה - פסטיבל בלב", `שלום ${name}, התשלום שלך התקבל בהצלחה!`, receiptPath);
+        sendEmail("moriyahln16@gmail.com", "תשלום חדש לפסטיבל בלב", `משתמש ביצע תשלום:\nשם: ${name}\nאימייל: ${email}\nטלפון: ${phone}`);
 
         res.send("✅ התשלום התקבל והמייל עם הקבלה נשלח בהצלחה!");
     } catch (error) {
@@ -94,6 +99,7 @@ app.post("/payment-confirmation", async (req, res) => {
     }
 });
 
+// 📌 הפעלת השרת
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`✅ השרת פועל על http://localhost:${PORT}`);
