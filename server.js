@@ -1,7 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const fs = require("fs");
 const nodemailer = require("nodemailer");
 
 const app = express();
@@ -12,42 +11,41 @@ const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
         user: "moriyahln16@gmail.com",
-        pass: "lxmp iaif shyu slxi" // החליפי בסיסמה שלך!
+        pass: "lxmp iaif shyu slxi"
     }
 });
 
-// שליחת מייל
-function sendEmail(name, email, phone) {
+function sendEmail(to, subject, text) {
     const mailOptions = {
         from: "moriyahln16@gmail.com",
-        to: email,
-        subject: "אישור תשלום לפסטיבל בלב 🎉",
-        text: `שלום ${name},\n\nההרשמה שלך לפסטיבל בלב התקבלה בהצלחה!\n\nפרטי ההרשמה שלך:\nשם: ${name}\nאימייל: ${email}\nטלפון: ${phone}\n\nנשמח לראותך!`
-    };
-
-    const adminMailOptions = {
-        from: "moriyahln16@gmail.com",
-        to: "moriyahln16@gmail.com",
-        subject: "הרשמה חדשה לפסטיבל בלב 🎉",
-        text: `הרשמה חדשה התקבלה!\n\nשם: ${name}\nאימייל: ${email}\nטלפון: ${phone}`
+        to,
+        subject,
+        text
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
-        if (error) console.error("❌ שגיאה בשליחת המייל למשתמש:", error);
-        else console.log("✅ מייל נשלח למשתמש:", info.response);
-    });
-
-    transporter.sendMail(adminMailOptions, (error, info) => {
-        if (error) console.error("❌ שגיאה בשליחת המייל לאדמין:", error);
-        else console.log("✅ מייל נשלח לאדמין:", info.response);
+        if (error) console.error("❌ שגיאה בשליחת המייל:", error);
+        else console.log("✅ מייל נשלח:", info.response);
     });
 }
 
-// טיפול בהרשמות לאחר תשלום
 app.post("/register", (req, res) => {
     const { name, email, phone } = req.body;
-    sendEmail(name, email, phone);
-    res.send("ההרשמה והתשלום אושרו! מייל אישור נשלח.");
+
+    if (!name || !email || !phone) {
+        return res.status(400).send("נא למלא את כל השדות!");
+    }
+
+    sendEmail(email, "אישור הרשמה לפסטיבל בלב", `שלום ${name},
+    תודה שנרשמת לפסטיבל בלב!`);
+    res.send("✅ ההרשמה נשמרה בהצלחה! כעת ניתן לשלם.");
+});
+
+app.post("/payment-confirmation", (req, res) => {
+    const { name, email, phone } = req.body;
+    sendEmail(email, "אישור תשלום לפסטיבל בלב", `שלום ${name},
+    התשלום שלך נקלט בהצלחה!`);
+    res.send("✅ התשלום התקבל והמייל נשלח בהצלחה!");
 });
 
 const PORT = process.env.PORT || 3000;
