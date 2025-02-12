@@ -1,99 +1,83 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const nodemailer = require("nodemailer");
-const fs = require("fs");
-const PDFDocument = require("pdfkit");
+document.addEventListener("DOMContentLoaded", function () {
+    const registerForm = document.getElementById("registration-form");
+    const payNowBtn = document.getElementById("pay-now");
+    const paypalContainer = document.getElementById("paypal-button-container");
+    const modal = document.getElementById("registration-modal");
+    const closeModal = document.querySelector(".close");
+    const thankYou = document.getElementById("thank-you");
 
-const app = express();
-app.use(bodyParser.json());
+    let userData = {};
 
-// ✅ פתרון CORS: מתיר גישה רק מהאתר שלך
-const corsOptions = {
-    origin: "https://moriyahhaddad.github.io", // שימי כאן את הכתובת של האתר שלך!
-    methods: ["POST", "GET"],
-    allowedHeaders: ["Content-Type"],
-    credentials: true
-};
-app.use(cors(corsOptions));
+    payNowBtn.addEventListener("click", function () {
+        const name = document.getElementById("name").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const phone = document.getElementById("phone").value.trim();
 
-// ✉️ הגדרת חיבור למייל
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: "moriyahln16@gmail.com",
-        pass: "lxmp iaif shyu slxi"
-    }
-});
+        if (!name || !email || !phone) {
+            alert("נא למלא את כל השדות!");
+            return;
+        }
 
-// 📧 פונקציה לשליחת מייל
-function sendEmail(to, subject, text, attachment = null) {
-    const mailOptions = {
-        from: "moriyahln16@gmail.com",
-        to,
-        subject,
-        text,
-        attachments: attachment ? [{ filename: "receipt.pdf", path: attachment }] : []
-    };
+        userData = { name, email, phone };
 
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) console.error("❌ שגיאה בשליחת המייל:", error);
-        else console.log("✅ מייל נשלח:", info.response);
+        fetch("https://festivalbalev-production.up.railway.app/register", {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(userData),
+            credentials: "include" // חשוב מאוד עבור CORS
+        })
+        .then(response => response.text())
+        .then(message => {
+            alert(message);
+            payNowBtn.style.display = "none";
+            paypalContainer.style.display = "block";
+            loadPayPalButton();
+        })
+        .catch(error => {
+            console.error("שגיאה בשליחת ההרשמה:", error);
+            alert("שגיאה בשליחת הנתונים, נסי שוב.");
+        });
     });
-}
 
-// 🧾 פונקציה ליצירת קבלה ב-PDF
-function generateReceipt(name, email, phone) {
-    return new Promise((resolve, reject) => {
-        const dir = "receipts";
-        if (!fs.existsSync(dir)) fs.mkdirSync(dir); // יצירת תיקייה אם לא קיימת
-        
-        const filePath = `${dir}/${name.replace(/\s+/g, '_')}_receipt.pdf`;
-        const doc = new PDFDocument();
-        
-        doc.pipe(fs.createWriteStream(filePath));
-        doc.fontSize(20).text("קבלה - פסטיבל בלב", { align: "center" });
-        doc.moveDown();
-        doc.fontSize(14).text(`שם: ${name}`);
-        doc.text(`אימייל: ${email}`);
-        doc.text(`טלפון: ${phone}`);
-        doc.text(`סכום: 50.00 ש"ח`);
-        doc.text(`תאריך: ${new Date().toLocaleDateString("he-IL")}`);
-        doc.end();
+    function loadPayPalButton() {
+        paypal.Buttons({
+            createOrder: function (data, actions) {
+                return actions.order.create({
+                    purchase_units: [{ amount: { value: '50.00' } }]
+                });
+            },
+            onApprove: function (data, actions) {
+                return actions.order.capture().then(function (details) {
+                    alert("התשלום התקבל בהצלחה!");
 
-        doc.on("finish", () => resolve(filePath));
-        doc.on("error", reject);
-    });
-}
-
-// 📌 נתיב לרישום משתמשים
-app.post("/register", (req, res) => {
-    const { name, email, phone } = req.body;
-    if (!name || !email || !phone) return res.status(400).send("נא למלא את כל השדות!");
-
-    sendEmail(email, "אישור הרשמה לפסטיבל בלב", `שלום ${name}, תודה שנרשמת!`);
-    sendEmail("moriyahln16@gmail.com", "הרשמה חדשה לפסטיבל בלב", `נרשם משתמש חדש:\nשם: ${name}\nאימייל: ${email}\nטלפון: ${phone}`);
-
-    res.send("✅ ההרשמה נשמרה בהצלחה! כעת ניתן לשלם.");
-});
-
-// 📌 נתיב לאישור תשלום ושליחת קבלה
-app.post("/payment-confirmation", async (req, res) => {
-    const { name, email, phone } = req.body;
-
-    try {
-        const receiptPath = await generateReceipt(name, email, phone);
-        sendEmail(email, "אישור תשלום לפסטיבל בלב", `שלום ${name}, התשלום שלך התקבל!`, receiptPath);
-        sendEmail("moriyahln16@gmail.com", "תשלום חדש לפסטיבל בלב", `תשלום התקבל:\nשם: ${name}\nאימייל: ${email}\nטלפון: ${phone}`);
-        res.send("✅ התשלום התקבל והמייל עם הקבלה נשלח בהצלחה!");
-    } catch (error) {
-        console.error("❌ שגיאה בשליחת הקבלה:", error);
-        res.status(500).send("שגיאה בשליחת הקבלה.");
+                    fetch("https://festivalbalev-production.up.railway.app/payment-confirmation", {
+                        method: "POST",
+                        headers: { 
+                            "Content-Type": "application/json",
+                            "Accept": "application/json"
+                        },
+                        body: JSON.stringify(userData),
+                        credentials: "include"
+                    })
+                    .then(response => response.text())
+                    .then(message => {
+                        alert(message);
+                        modal.style.display = "none";
+                        thankYou.style.display = "block";
+                    })
+                    .catch(error => {
+                        console.error("שגיאה בשליחת אישור התשלום:", error);
+                        alert("שגיאה בשליחת האישור.");
+                    });
+                });
+            }
+        }).render("#paypal-button-container");
     }
-});
 
-// ✅ האזנה לשרת
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`✅ השרת פועל על http://localhost:${PORT}`);
+    closeModal.addEventListener("click", function () {
+        modal.style.display = "none";
+    });
 });
