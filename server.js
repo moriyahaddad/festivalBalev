@@ -7,8 +7,16 @@ const PDFDocument = require("pdfkit");
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors());
 
+// הגדרות CORS כדי לאפשר בקשות מהאתר שלך
+const corsOptions = {
+    origin: ["https://moriyahhaddad.github.io", "https://moriyahhaddad.github.io/festivalBalev"],
+    methods: ["POST", "GET"],
+    allowedHeaders: ["Content-Type"],
+};
+app.use(cors(corsOptions));
+
+// הגדרת חיבור למייל
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -17,6 +25,7 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+// פונקציה לשליחת מייל
 function sendEmail(to, subject, text, attachment = null) {
     const mailOptions = {
         from: "moriyahln16@gmail.com",
@@ -32,13 +41,15 @@ function sendEmail(to, subject, text, attachment = null) {
     });
 }
 
+// פונקציה ליצירת קבלה ב-PDF
 function generateReceipt(name, email, phone) {
     return new Promise((resolve, reject) => {
-        const filePath = `receipts/${name.replace(/\s+/g, '_')}_receipt.pdf`;
+        const dir = "receipts";
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir); // יצירת תיקייה אם לא קיימת
+        
+        const filePath = `${dir}/${name.replace(/\s+/g, '_')}_receipt.pdf`;
         const doc = new PDFDocument();
-
-        fs.mkdirSync("receipts", { recursive: true });
-
+        
         doc.pipe(fs.createWriteStream(filePath));
         doc.fontSize(20).text("קבלה - פסטיבל בלב", { align: "center" });
         doc.moveDown();
@@ -54,6 +65,18 @@ function generateReceipt(name, email, phone) {
     });
 }
 
+// נתיב לרישום משתמשים
+app.post("/register", (req, res) => {
+    const { name, email, phone } = req.body;
+    if (!name || !email || !phone) return res.status(400).send("נא למלא את כל השדות!");
+
+    sendEmail(email, "אישור הרשמה לפסטיבל בלב", `שלום ${name}, תודה שנרשמת!`);
+    sendEmail("moriyahln16@gmail.com", "הרשמה חדשה לפסטיבל בלב", `נרשם משתמש חדש:\nשם: ${name}\nאימייל: ${email}\nטלפון: ${phone}`);
+
+    res.send("✅ ההרשמה נשמרה בהצלחה! כעת ניתן לשלם.");
+});
+
+// נתיב לאישור תשלום ושליחת קבלה
 app.post("/payment-confirmation", async (req, res) => {
     const { name, email, phone } = req.body;
 
