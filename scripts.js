@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         userData = { name, email, phone };
 
-        fetch("festivalbalev-production.up.railway.app", {
+        fetch("https://festivalbalev-production.up.railway.app/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(userData)
@@ -42,15 +42,13 @@ document.addEventListener("DOMContentLoaded", function () {
         paypal.Buttons({
             createOrder: function (data, actions) {
                 return actions.order.create({
-                    purchase_units: [{
-                        amount: { value: '50.00' }
-                    }]
+                    purchase_units: [{ amount: { value: '50.00' } }]
                 });
             },
             onApprove: function (data, actions) {
                 return actions.order.capture().then(function (details) {
                     alert("התשלום התקבל בהצלחה!");
-                    
+
                     fetch("https://festivalbalev-production.up.railway.app/payment-confirmation", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -59,8 +57,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     .then(response => response.text())
                     .then(message => {
                         alert(message);
-                        modal.style.display = "none"; // סגירת חלון ההרשמה
-                        thankYou.style.display = "block"; // הצגת תמונת תודה
+                        modal.style.display = "none";
+                        thankYou.style.display = "block";
                     })
                     .catch(error => {
                         console.error("שגיאה בשליחת אישור התשלום:", error);
