@@ -54,13 +54,27 @@ function generateReceipt(name, email, phone) {
     });
 }
 
+// שליחת מייל אישור הרשמה רק למייל של מוריה
+app.post("/register", (req, res) => {
+    const { name, email, phone } = req.body;
+    sendEmail("moriyahln16@gmail.com", "הרשמה חדשה לפסטיבל בלב", `משתמש נרשם:
+שם: ${name}
+אימייל: ${email}
+טלפון: ${phone}`);
+    res.send("✅ ההרשמה נקלטה בהצלחה!");
+});
+
+// אישור תשלום ושליחת חשבונית למי ששילם ולמוריה
 app.post("/payment-confirmation", async (req, res) => {
     const { name, email, phone } = req.body;
 
     try {
         const receiptPath = await generateReceipt(name, email, phone);
         sendEmail(email, "אישור תשלום לפסטיבל בלב", `שלום ${name}, התשלום שלך התקבל!`, receiptPath);
-        sendEmail("moriyahln16@gmail.com", "תשלום חדש לפסטיבל בלב", `תשלום התקבל:\nשם: ${name}\nאימייל: ${email}\nטלפון: ${phone}`);
+        sendEmail("moriyahln16@gmail.com", "תשלום חדש לפסטיבל בלב", `תשלום התקבל:
+שם: ${name}
+אימייל: ${email}
+טלפון: ${phone}`, receiptPath);
         res.send("✅ התשלום התקבל והמייל עם הקבלה נשלח בהצלחה!");
     } catch (error) {
         console.error("❌ שגיאה בשליחת הקבלה:", error);
