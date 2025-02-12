@@ -8,13 +8,8 @@ const PDFDocument = require("pdfkit");
 const app = express();
 app.use(bodyParser.json());
 
-// אפשר קריאות מהאתר הראשי ומהנתיב festivalBalev
-const corsOptions = {
-    origin: ["https://moriyahhaddad.github.io", "https://moriyahhaddad.github.io/festivalBalev/"],
-    methods: "GET,POST",
-    allowedHeaders: "Content-Type"
-};
-app.use(cors(corsOptions));
+// לאפשר גישה מכל מקור לצורך בדיקה
+app.use(cors());
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
