@@ -8,15 +8,16 @@ const PDFDocument = require("pdfkit");
 const app = express();
 app.use(bodyParser.json());
 
-// הגדרות CORS כדי לאפשר בקשות מהאתר שלך
+// ✅ פתרון בעיית CORS: מתיר רק לאתר שלך לבצע בקשות
 const corsOptions = {
-    origin: ["https://moriyahhaddad.github.io", "https://moriyahhaddad.github.io/festivalBalev"],
+    origin: "https://moriyahhaddad.github.io",
     methods: ["POST", "GET"],
     allowedHeaders: ["Content-Type"],
+    credentials: true
 };
 app.use(cors(corsOptions));
 
-// הגדרת חיבור למייל
+// ✉️ הגדרת חיבור למייל
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -25,7 +26,7 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// פונקציה לשליחת מייל
+// 📧 פונקציה לשליחת מייל
 function sendEmail(to, subject, text, attachment = null) {
     const mailOptions = {
         from: "moriyahln16@gmail.com",
@@ -41,7 +42,7 @@ function sendEmail(to, subject, text, attachment = null) {
     });
 }
 
-// פונקציה ליצירת קבלה ב-PDF
+// 🧾 פונקציה ליצירת קבלה ב-PDF
 function generateReceipt(name, email, phone) {
     return new Promise((resolve, reject) => {
         const dir = "receipts";
@@ -65,7 +66,7 @@ function generateReceipt(name, email, phone) {
     });
 }
 
-// נתיב לרישום משתמשים
+// 📌 נתיב לרישום משתמשים
 app.post("/register", (req, res) => {
     const { name, email, phone } = req.body;
     if (!name || !email || !phone) return res.status(400).send("נא למלא את כל השדות!");
@@ -76,7 +77,7 @@ app.post("/register", (req, res) => {
     res.send("✅ ההרשמה נשמרה בהצלחה! כעת ניתן לשלם.");
 });
 
-// נתיב לאישור תשלום ושליחת קבלה
+// 📌 נתיב לאישור תשלום ושליחת קבלה
 app.post("/payment-confirmation", async (req, res) => {
     const { name, email, phone } = req.body;
 
@@ -91,6 +92,7 @@ app.post("/payment-confirmation", async (req, res) => {
     }
 });
 
+// ✅ האזנה לשרת
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`✅ השרת פועל על http://localhost:${PORT}`);
