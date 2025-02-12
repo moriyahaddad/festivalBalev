@@ -7,7 +7,14 @@ const PDFDocument = require("pdfkit");
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors());
+
+// אפשר רק קריאות מה-Frontend שלך
+const corsOptions = {
+    origin: "https://moriyahhaddad.github.io/festivalBalev/",
+    methods: "GET,POST",
+    allowedHeaders: "Content-Type"
+};
+app.use(cors(corsOptions));
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -45,7 +52,7 @@ function generateReceipt(name, email, phone) {
         doc.fontSize(14).text(`שם: ${name}`);
         doc.text(`אימייל: ${email}`);
         doc.text(`טלפון: ${phone}`);
-        doc.text(`סכום: 01.00 ש"ח`);
+        doc.text(`סכום: 50.00 ש"ח`);
         doc.text(`תאריך: ${new Date().toLocaleDateString("he-IL")}`);
         doc.end();
 
@@ -75,7 +82,12 @@ app.post("/payment-confirmation", async (req, res) => {
 שם: ${name}
 אימייל: ${email}
 טלפון: ${phone}`, receiptPath);
-        res.send("✅ התשלום התקבל והמייל עם הקבלה נשלח בהצלחה!");
+        
+        // הוספת הודעה JSON עם אישור להצגת תמונת התודה וסגירת החלון
+        res.json({
+            message: "✅ התשלום התקבל והמייל עם הקבלה נשלח בהצלחה!",
+            showThankYou: true
+        });
     } catch (error) {
         console.error("❌ שגיאה בשליחת הקבלה:", error);
         res.status(500).send("שגיאה בשליחת הקבלה.");
