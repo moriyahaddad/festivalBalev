@@ -8,9 +8,9 @@ const PDFDocument = require("pdfkit");
 const app = express();
 app.use(bodyParser.json());
 
-// אפשר רק קריאות מה-Frontend שלך
+// אפשר קריאות מהאתר הראשי ומהנתיב festivalBalev
 const corsOptions = {
-    origin: "https://moriyahhaddad.github.io/festivalBalev/",
+    origin: ["https://moriyahhaddad.github.io", "https://moriyahhaddad.github.io/festivalBalev/"],
     methods: "GET,POST",
     allowedHeaders: "Content-Type"
 };
