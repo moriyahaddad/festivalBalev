@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         userData = { name, email, phone };
 
-        fetch("https://festivalbalev-production.up.railway.app/register", {
+        fetch("festivalbalev-production.up.railway.app", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(userData)
