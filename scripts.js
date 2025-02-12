@@ -22,8 +22,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         fetch("https://festivalbalev-production.up.railway.app/register", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(userData)
+            headers: { 
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(userData),
+            credentials: "include" // חשוב מאוד עבור CORS
         })
         .then(response => response.text())
         .then(message => {
@@ -51,8 +55,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     fetch("https://festivalbalev-production.up.railway.app/payment-confirmation", {
                         method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(userData)
+                        headers: { 
+                            "Content-Type": "application/json",
+                            "Accept": "application/json"
+                        },
+                        body: JSON.stringify(userData),
+                        credentials: "include"
                     })
                     .then(response => response.text())
                     .then(message => {
