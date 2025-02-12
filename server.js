@@ -45,7 +45,7 @@ function generateReceipt(name, email, phone) {
         doc.fontSize(14).text(`שם: ${name}`);
         doc.text(`אימייל: ${email}`);
         doc.text(`טלפון: ${phone}`);
-        doc.text(`סכום: 50.00 ש"ח`);
+        doc.text(`סכום: 01.00 ש"ח`);
         doc.text(`תאריך: ${new Date().toLocaleDateString("he-IL")}`);
         doc.end();
 
