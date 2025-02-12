@@ -8,9 +8,9 @@ const PDFDocument = require("pdfkit");
 const app = express();
 app.use(bodyParser.json());
 
-// ✅ פתרון בעיית CORS: מתיר רק לאתר שלך לבצע בקשות
+// ✅ פתרון CORS: מתיר גישה רק מהאתר שלך
 const corsOptions = {
-    origin: "https://moriyahhaddad.github.io",
+    origin: "https://moriyahhaddad.github.io", // שימי כאן את הכתובת של האתר שלך!
     methods: ["POST", "GET"],
     allowedHeaders: ["Content-Type"],
     credentials: true
